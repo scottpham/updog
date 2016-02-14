@@ -1,18 +1,27 @@
-<!DOCTYPE html> <html> <head> <meta charset=utf-8> <meta http-equiv=X-UA-Compatible content="IE=edge"> <meta name=viewport content="width=device-width,initial-scale=1"> <meta property=og:title content=updog> <meta property=og:image content=http://media.apps.cironline.org/richmond/images/logo1x.png> <meta property=og:description content=""> <title>updog</title> <meta name=description content=""> <meta name=viewport content="width=device-width"> <link rel="shortcut icon" type=image/x-icon href=http://cironline.org/sites/all/themes/cir/favicon.ico> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel=stylesheet href=styles/56c76158.main.css>  <body> <!--[if lt IE 10]>
+<!DOCTYPE html> <html> <head> <meta charset=utf-8> <meta http-equiv=X-UA-Compatible content="IE=edge"> <meta name=viewport content="width=device-width,initial-scale=1"> <meta property=og:title content=updog> <meta property=og:image content=http://media.apps.cironline.org/richmond/images/logo1x.png> <meta property=og:description content=""> <title>updog</title> <meta name=description content=""> <meta name=viewport content="width=device-width"> <link rel="shortcut icon" type=image/x-icon href=http://cironline.org/sites/all/themes/cir/favicon.ico> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel=stylesheet href=styles/8f659223.main.css>  <body> <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]--> <div class=container id=backboneEl> </div> <script id=template type=text/html><h1 class="text-center">Updog</h1>
-    <p class="text-center">Click to updog yr doges. Buy a click-doge to auto-updog yr doges.</p>
-		<div id="mainRow" class="row vertical-center">
-      <!--  button component-->
+    <![endif]--> <div class=container id=backboneEl> </div> <script id=template type=text/html><div id="mainRow" class="row vertical-center">
+
+			<h1 class="text-center">Updog</h1>
+			<p class="text-center">Click to updog yr doges. Buy a click-doge to auto-updog yr doges.</p>
+
+
+			<div class="row" >
+				<div class="col-xs-12 text-center">
+					<img class="animated" src="images/758c4520.doge.jpeg" id="dogepic" alt="doge">
+				</div>
+			</div>
+
+      <!--  top-row -->
       <div class="col-xs-12 center-block">
 
         <!-- clicker -->
-        <div class="col-xs-6  text-center">
+        <div class="col-xs-7 col-lg-6 col-md-offset-1 text-center">
           <input id="clicker" class="btn btn-lg btn-default text-center" type="button" value="Click to Updog">
         </div>
 
         <!-- counter -->
-        <div class="col-xs-6 col-sm-3 col-md-2 text-center">
+        <div class="col-xs-5 col-sm-3 col-md-2 text-center">
           <div id='counter' style="max-width: 200px" class="panel panel-default"></div>
           <!-- updogs per second -->
           <div class="text-center" id="dps">
@@ -25,11 +34,11 @@
       <hr>
 
       <!-- buy a clicker -->
-      <div class="col-xs-6" id="buyClickDoge">
+      <div class="col-xs-7 col-lg-6 col-md-offset-1" id="buyClickDoge">
       </div>
 
       <!-- click doge counter -->
-      <div class="col-xs-6 col-sm-3 col-md-2 text-center" id="clickerCounter">
+      <div class="col-xs-5 col-sm-3 col-md-2 text-center" id="clickerCounter">
       </div>
 
 
@@ -40,7 +49,7 @@
 
   </div></script> <script id=clickDogeCounterTemplate type=text/html><div style="max-width: 200px" class="panel panel-default">
       <h4>Click-Doges: <%= clickDoges %></h4>
-    </div></script> <script src=scripts/d0999722.vendor.js></script> <script src=scripts/fd7ee333.main.js></script> <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. --> <!-- <script type="text/javascript" async src="//platform.twitter.com/widgets.js"></script>
+    </div></script> <script src=scripts/d0999722.vendor.js></script> <script src=scripts/32cbfd77.main.js></script> <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. --> <!-- <script type="text/javascript" async src="//platform.twitter.com/widgets.js"></script>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       var WebFontConfig = {
