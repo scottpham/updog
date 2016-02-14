@@ -8,11 +8,12 @@ var app = app || {};
 var Dogs = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			incrementer: 1,
+			timeIncrementer: 0,
 			clickDoges: 0,
 			clickIncrementer: 1,
 			count: 0,
 			clickerCost: 10,
+			dps: 0,
 		}
 	},
 	stopAutoClick: function() {
@@ -21,6 +22,27 @@ var Dogs = Backbone.Model.extend({
 		} catch (e) {
 			console.log(e);
 		}
+	},
+	calculateDPS: function(miliseconds) {
+		var dps = this.get('dps');
+		var incrementer = this.get('timeIncrementer');
+
+		var newDps = 1 / (miliseconds / 1000);
+
+		this.set('dps', newDps + incrementer);
+
+	},
+	formatter: function(num) {
+		//this just rounds down
+		return Math.floor(num);
+	},
+	increaseCost: function() {
+		var cost = this.get('clickerCost');
+		var clickers = this.get('clickDoges');
+
+		var newCost = cost * (1.3);
+
+		this.set('clickerCost', this.formatter(newCost));
 	},
 	setClickDoge: function() {
 
@@ -33,6 +55,7 @@ var Dogs = Backbone.Model.extend({
 			interval);
 
 		console.log("doges are clicking every " + interval + "miliseconds");
+		this.calculateDPS(interval);
 	},
 	buyClickDoge: function() {
 		console.log("buy click doge ran");
@@ -44,17 +67,22 @@ var Dogs = Backbone.Model.extend({
 			alert('not enough dogs');
 			return;
 		} else {
-
+			//take the doges
 			this.set('count', dogs - cost);
+
 			//increment click doge count
 			var newCount = this.get('clickDoges') + 1;
 
-			//set value
+			//set new click doge value
 			this.set({
 				"clickDoges": newCount
 			});
 
+			//fire off new incrementer
 			this.setClickDoge();
+
+			//reset the cost of click doges
+			this.increaseCost();
 		}
 	},
 	timeIncrement: function() {
@@ -73,6 +101,21 @@ var Dogs = Backbone.Model.extend({
 			'count': newCount
 		});
 	}
+});
+
+var Dps = Backbone.View.extend({
+	template: _.template($('#dpsTemplate').html()),
+	initialize: function() {
+		this.render();
+		this.listenTo(this.model, 'change', this.render);
+	},
+	render: function() {
+		//render
+		this.$el.html(this.template(this.model.toJSON()));
+
+		this.delegateEvents();
+	}
+
 });
 
 var Clicker = Backbone.View.extend({
@@ -119,6 +162,8 @@ var BuyClickView = Backbone.View.extend({
 	template: _.template($('#buyClickDogeTemplate').html()),
 	initialize: function() {
 		this.render();
+
+		this.listenTo(this.model, 'change', this.render);
 	},
 	events: {
 		"click": "handleClick"
@@ -127,8 +172,10 @@ var BuyClickView = Backbone.View.extend({
 		this.model.buyClickDoge();
 	},
 	render: function() {
-		this.$el.html(this.template({}));
+		this.$el.html(this.template(this.model.toJSON()));
 
+		//re add events on re-render
+		this.delegateEvents()
 		return this;
 	}
 });
@@ -179,7 +226,12 @@ var MainView = Backbone.View.extend({
 		this.showClickDoges = new ShowClickDoges({
 			el: $('#clickerCounter'),
 			model: this.model
-		})
+		});
+
+		this.dps = new Dps({
+			el: $('#dps'),
+			model: this.model
+		});
 	},
 	render: function() {
 		//render template
