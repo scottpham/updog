@@ -54,7 +54,7 @@ var Dogs = Backbone.Model.extend({
 		this.autoClicker = window.setInterval(this.clickIncrement.bind(this),
 			interval);
 
-		console.log("doges are clicking every " + interval + "miliseconds");
+		console.log("doges are clicking every " + interval + " miliseconds");
 		this.calculateDPS(interval);
 	},
 	buyClickDoge: function() {
@@ -64,7 +64,7 @@ var Dogs = Backbone.Model.extend({
 		var cost = this.get('clickerCost');
 		//dump out if cost is too much
 		if (dogs < cost) {
-			alert('not enough dogs');
+			alert('Not enough Doges');
 			return;
 		} else {
 			//take the doges
