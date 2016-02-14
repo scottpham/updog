@@ -9,11 +9,42 @@ var Dogs = Backbone.Model.extend({
 	defaults: function() {
 		return {
 			incrementer: 1,
+			clickDoges: 0,
 			clickIncrementer: 1,
 			count: 0
 		}
 	},
+	stopAutoClick: function() {
+		try {
+			window.clearInterval(this.autoClicker);
+		} catch (e) {
+			console.log(e);
+		}
+	},
+	setClickDoge: function() {
+
+		var clickers = this.get('clickDoges');
+		var interval = 10000 / clickers;
+		// clear out old interval
+		this.stopAutoClick();
+		//set interval to 10 seconds
+		this.autoClicker = window.setInterval(this.clickIncrement.bind(this),
+			interval);
+
+		console.log("doges are clicking every " + interval + "miliseconds");
+	},
+	buyClickDoge: function() {
+		//increment click doge count
+		var newCount = this.get('clickDoges') + 1;
+
+		//set value
+		this.set({
+			"clickDoges": newCount
+		});
+	},
 	timeIncrement: function() {
+
+
 		var newCount = this.get('count') + this.get('incrementer');
 
 		this.set({
@@ -68,6 +99,25 @@ var CounterView = Backbone.View.extend({
 	}
 });
 
+var BuyClickView = Backbone.View.extend({
+	template: _.template($('#buyClickDogeTemplate').html()),
+	initialize: function() {
+		this.render();
+	},
+	events: {
+		"click": "handleClick"
+	},
+	handleClick: function() {
+		this.model.buyClickDoge();
+		this.model.setClickDoge();
+	},
+	render: function() {
+		this.$el.html(this.template({}));
+
+		return this;
+	}
+});
+
 
 var MainView = Backbone.View.extend({
 	el: $('#backboneEl'),
@@ -83,6 +133,11 @@ var MainView = Backbone.View.extend({
 		//counter is a sub view
 		this.counter = new CounterView({
 			el: $('#counter'),
+			model: this.model
+		});
+
+		this.buyClick = new BuyClickView({
+			el: $('#buyClickDoge'),
 			model: this.model
 		});
 	},
