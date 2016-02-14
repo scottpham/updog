@@ -33,14 +33,49 @@
 
 	</div>
 
-	<script id="template" type="text/template">
-			<div class="col-xs-12 vertical-center">
+	<script id="template" type="text/html">
+		<div id="mainRow" class="row vertical-center">
+      <!--  button component-->
+      <div class="col-xs-12 center-block">
 
-				<h2 class="text-center">
-        <input class="btn btn-lg btn-default text-center" type="submit" value="Add an Updog">
-        Dogs: <%= count %>
+        <!-- clicker -->
+        <div class="col-xs-6 col-sm-3 col-sm-offset-4 col-md-2 text-center">
+          <input id="clicker" class="btn btn-lg btn-default text-center" type="button" value="Add an Updog">
+        </div>
+
+        <!-- counter -->
+        <div class="col-xs-6 col-sm-3 col-md-2 text-center">
+          <div id='counter' style="max-width: 200px" class="panel panel-default"></div>
+        </div>
 
       </div>
+
+      <hr>
+
+      <!-- buy a clicker -->
+      <div class="col-xs-6">
+        <div class="text-center">
+          <input type="button" id="buyClickDoge" class="btn btn-lg btn-default" value="Buy a click doge">
+        </div>
+      </div>
+
+      <div class="col-xs-6 col-sm-3 col-md-2 text-center">
+        <div id='clickerCounter' style="max-width: 200px" class="panel panel-default">
+          <h4>Click Doges: 0</h4>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+  </script>
+
+  <script id="counterTemplate" type="text/template">
+
+    	<h2 class="text-center">  Doges: <%= count %> </h2>
+
   </script>
 
     <!-- build:js(.) scripts/vendor.js -->
