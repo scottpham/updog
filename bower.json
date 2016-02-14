@@ -1,0 +1,8 @@
+{
+  "name": "updog",
+  "private": true,
+  "dependencies": {
+    "bootstrap-sass-official": "~3.2.0",
+    "backbone": "^1.2.3"
+  }
+}
