@@ -11,7 +11,8 @@ var Dogs = Backbone.Model.extend({
 			incrementer: 1,
 			clickDoges: 0,
 			clickIncrementer: 1,
-			count: 0
+			count: 0,
+			clickerCost: 10,
 		}
 	},
 	stopAutoClick: function() {
@@ -34,16 +35,29 @@ var Dogs = Backbone.Model.extend({
 		console.log("doges are clicking every " + interval + "miliseconds");
 	},
 	buyClickDoge: function() {
-		//increment click doge count
-		var newCount = this.get('clickDoges') + 1;
+		console.log("buy click doge ran");
 
-		//set value
-		this.set({
-			"clickDoges": newCount
-		});
+		var dogs = this.get('count');
+		var cost = this.get('clickerCost');
+		//dump out if cost is too much
+		if (dogs < cost) {
+			alert('not enough dogs');
+			return;
+		} else {
+
+			this.set('count', dogs - cost);
+			//increment click doge count
+			var newCount = this.get('clickDoges') + 1;
+
+			//set value
+			this.set({
+				"clickDoges": newCount
+			});
+
+			this.setClickDoge();
+		}
 	},
 	timeIncrement: function() {
-
 
 		var newCount = this.get('count') + this.get('incrementer');
 
@@ -90,6 +104,8 @@ var CounterView = Backbone.View.extend({
 		this.$el.html(this.template(this.model.toJSON()));
 		//because events get effed on re-render
 		this.delegateEvents();
+
+		return this;
 	},
 	initialize: function() {
 		//re-render on change
@@ -109,12 +125,31 @@ var BuyClickView = Backbone.View.extend({
 	},
 	handleClick: function() {
 		this.model.buyClickDoge();
-		this.model.setClickDoge();
 	},
 	render: function() {
 		this.$el.html(this.template({}));
 
 		return this;
+	}
+});
+
+var ShowClickDoges = Backbone.View.extend({
+	template: _.template($('#clickDogeCounterTemplate').html()),
+	initialize: function() {
+		//re-render on change to model
+		this.listenTo(this.model, 'change', this.render);
+
+		this.render();
+	},
+	render: function() {
+		//render template
+		this.$el.html(this.template(this.model.toJSON()));
+
+		//re attach events if there are any
+		this.delegateEvents();
+
+		return this;
+
 	}
 });
 
@@ -140,6 +175,11 @@ var MainView = Backbone.View.extend({
 			el: $('#buyClickDoge'),
 			model: this.model
 		});
+
+		this.showClickDoges = new ShowClickDoges({
+			el: $('#clickerCounter'),
+			model: this.model
+		})
 	},
 	render: function() {
 		//render template
