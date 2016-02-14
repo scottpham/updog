@@ -4,6 +4,17 @@
 
 var app = app || {};
 
+//jquery extension for animate.css
+$.fn.extend({
+	animateCss: function(animationName) {
+		var animationEnd =
+			'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+		$(this).addClass('animated ' + animationName).one(animationEnd, function() {
+			$(this).removeClass('animated ' + animationName);
+		});
+	}
+});
+
 
 var Dogs = Backbone.Model.extend({
 	defaults: function() {
@@ -200,6 +211,28 @@ var ShowClickDoges = Backbone.View.extend({
 	}
 });
 
+var DogePic = Backbone.View.extend({
+	template: {},
+	render: function() {
+
+		this.delegateEvents();
+
+	},
+	initialize: function() {
+		this.render();
+
+		this.listenTo(this.model, 'change:clickDoges', this.newClickDoge);
+		this.listenTo(this.model, 'change:count', this.newDoge);
+
+	},
+	newDoge: function() {
+		// this.$el.animateCss('pulse');
+	},
+	newClickDoge: function() {
+		this.$el.animateCss('bounce');
+	}
+});
+
 
 var MainView = Backbone.View.extend({
 	el: $('#backboneEl'),
@@ -230,6 +263,11 @@ var MainView = Backbone.View.extend({
 
 		this.dps = new Dps({
 			el: $('#dps'),
+			model: this.model
+		});
+
+		this.dogePic = new DogePic({
+			el: $('#dogepic'),
 			model: this.model
 		});
 	},
