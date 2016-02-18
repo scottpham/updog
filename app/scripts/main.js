@@ -23,12 +23,14 @@ var Dogs = Backbone.Model.extend({
 			clickDoges: 0,
 			clickIncrementer: 1,
 			count: 0,
-			clickerCost: 10,
+			clickerCost: 5,
 			generatorCost: 50,
 			dps: 0,
 			generators: 0,
 		}
 	},
+	autoClicker: {},
+	autoGenerator: {},
 	buyGenerator: function() {
 		var dogs = this.get('count');
 		var cost = this.get('generatorCost');
@@ -93,7 +95,6 @@ var Dogs = Backbone.Model.extend({
 		var interval = 1000 / generators;
 
 		// clear out old interval
-
 		try {
 			window.clearInterval(this.autoGenerator);
 		} catch (e) {
@@ -199,7 +200,7 @@ var BuyClickView = Backbone.View.extend({
 	initialize: function() {
 		this.render();
 
-		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change:clickerCost', this.render);
 	},
 	events: {
 		"click": "handleClick"
@@ -216,33 +217,13 @@ var BuyClickView = Backbone.View.extend({
 	}
 });
 
-// click doge stats
-var ShowClickDoges = Backbone.View.extend({
-	template: _.template($('#clickDogeCounterTemplate').html()),
-	initialize: function() {
-		//re-render on change to model
-		this.listenTo(this.model, 'change', this.render);
-
-		this.render();
-	},
-	render: function() {
-		//render template
-		this.$el.html(this.template(this.model.toJSON()));
-
-		//re attach events if there are any
-		this.delegateEvents();
-
-		return this;
-
-	}
-});
 
 //buy a generator button
 var GeneratorView = Backbone.View.extend({
 	template: _.template($('#generatorTemplate').html()),
 	initialize: function() {
 		// re-render on change to model
-		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change:generatorCost', this.render);
 
 		this.render();
 	},
