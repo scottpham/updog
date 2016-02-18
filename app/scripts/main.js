@@ -27,6 +27,7 @@ var Dogs = Backbone.Model.extend({
 			generatorCost: 50,
 			dps: 0,
 			generators: 0,
+			clickUpgradeCost: 100,
 		}
 	},
 	autoClicker: {},
@@ -83,8 +84,6 @@ var Dogs = Backbone.Model.extend({
 	},
 	increaseCost: function(buyable) {
 		var cost = this.get(buyable);
-		var clickers = this.get('clickDoges');
-
 		var newCost = cost * (1.3);
 
 		this.set(buyable, this.formatter(newCost));
@@ -121,33 +120,44 @@ var Dogs = Backbone.Model.extend({
 		console.log("doges are clicking every " + interval + " miliseconds");
 		this.calculateDPS(interval);
 	},
-	buyClickDoge: function() {
-		console.log("buy click doge ran");
+	//return true if user can afford the buyable
+	//buyable should be a cost attribute
+	checkCost: function(buyable) {
+		console.log("checked cost");
 
 		var dogs = this.get('count');
-		var cost = this.get('clickerCost');
+		var cost = this.get(buyable);
 		//dump out if cost is too much
+
 		if (dogs < cost) {
 			alert('Not enough Doges');
-			return;
+			return false;
 		} else {
 			//take the doges
 			this.set('count', dogs - cost);
-
-			//increment click doge count
-			var newCount = this.get('clickDoges') + 1;
-
-			//set new click doge value
-			this.set({
-				"clickDoges": newCount
-			});
-
-			//fire off new incrementer
-			this.setClickDoge();
-
-			//reset the cost of click doges
-			this.increaseCost('clickerCost');
+			return true;
 		}
+	},
+	buyClickDoge: function() {
+		console.log("buy click doge ran");
+
+		//check if user can afford
+		if (!this.checkCost('clickerCost')) {
+			return;
+		}
+		//increment click doge count
+		var newCount = this.get('clickDoges') + 1;
+
+		//set new click doge value
+		this.set({
+			"clickDoges": newCount
+		});
+
+		//fire off new incrementer
+		this.setClickDoge();
+
+		//reset the cost of click doges
+		this.increaseCost('clickerCost');
 	},
 	timeIncrement: function() {
 		console.log('time increment fired');
@@ -165,7 +175,23 @@ var Dogs = Backbone.Model.extend({
 		this.set({
 			'count': newCount
 		});
+	},
+	upgradeClick: function() {
+		//check if user can afford
+		if (!this.checkCost('clickUpgradeCost')) {
+			return;
+		}
 
+		console.log("click upgraded");
+
+		//increase click incrementer
+		var increment = this.get('clickIncrementer');
+		this.set('clickIncrementer', increment + 1);
+
+		//increase the cost of this item
+		this.increaseCost('clickUpgradeCost');
+
+		this.calculateDPS();
 	}
 });
 
@@ -217,15 +243,41 @@ var BuyClickView = Backbone.View.extend({
 	}
 });
 
+var UpgradeClickView = Backbone.View.extend({
+	template: _.template($('#upgradeClickTemplate').html()),
+	initialize: function() {
+		this.render();
+
+		//re-render on change
+		this.listenTo(this.model, 'change:clickUpgradeCost', this.render);
+	},
+	events: {
+		"click": "handleClick"
+	},
+	handleClick: function() {
+		this.model.upgradeClick();
+	},
+	render: function() {
+		//render template
+		this.$el.html(this.template(this.model.toJSON()));
+
+		//re delegate events in case of re-render
+		this.delegateEvents();
+	}
+});
+
 
 //buy a generator button
 var GeneratorView = Backbone.View.extend({
 	template: _.template($('#generatorTemplate').html()),
 	initialize: function() {
+
+		this.render();
+
 		// re-render on change to model
 		this.listenTo(this.model, 'change:generatorCost', this.render);
 
-		this.render();
+
 	},
 	events: {
 		"click": "handleClick"
@@ -262,9 +314,11 @@ var DogePic = Backbone.View.extend({
 	initialize: function() {
 		this.render();
 
-		this.listenTo(this.model, 'change:clickDoges', this.newClickDoge);
+		this.listenTo(this.model,
+			'change:clickDoges change:timeIncrementer change:clickIncrementer', this
+			.bounce);
 	},
-	newClickDoge: function() {
+	bounce: function() {
 		this.$el.animateCss('bounce');
 	}
 });
@@ -312,6 +366,11 @@ var MainView = Backbone.View.extend({
 
 		this.stats = new StatsView({
 			el: $('#stats'),
+			model: this.model
+		});
+
+		this.upgradeClick = new UpgradeClickView({
+			el: $('#upgradeClick'),
 			model: this.model
 		});
 

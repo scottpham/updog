@@ -64,30 +64,37 @@
 			<!--  buy a click generator -->
 			<div class="col-xs-6 col-md-4 col-lg-3" id="dogeGenerator"></div>
 
+			<div class="col-xs-6 col-md-3 col-md-offset-3" id="upgradeClick">
+			</div>
+
+			<div class="col-xs-6 col-md-3 col-md-offset-3" id="upgradeGenerator">
+			</div>
+
     </div>
   </script>
 
+<!-- template for upgrader -->
+<script id="upgradeClickTemplate" type="text/template">
+	<div class="text-center">
+		<button class="btn btn-lg btn-default" value="">Upgrade yr Clicks <br /> Cost: <%= clickUpgradeCost %></button>
+	</div>
+</script>
 
-
+	<!-- template for generator buy -->
 	<script id="generatorTemplate" type="text/template">
 		<div class="text-center">
 			<button class="btn btn-lg btn-default" value="Buy a Doge Generator">Buy a Doge Generator<br /> Cost: <%= generatorCost %></button>
 		</div>
 	</script>
 
-
+<!-- template for clicker buy -->
   <script id="buyClickDogeTemplate" type="text/html">
 	  <div class="text-center">
 	    <button class="btn btn-lg btn-default" value="Buy a Click-Doge">Buy a Click-Doge <br /> Cost: <%= clickerCost %></button>
 	  </div>
   </script>
 
-  <script id="clickDogeCounterTemplate" type="text/html">
-    <div style="max-width: 200px" class="panel panel-default">
-      <h4>Click-Doges: <%= clickDoges %></h4>
-    </div>
-  </script>
-
+<!-- template for stats buy -->
 	<script id="statsTemplate" type="text/html">
 		<div class="text-center">Doges: <%= count %> | Doges per second: <%= dps %> | Click Doges: <%= clickDoges %> | Doge Generators: <%= generators %></div>
 	</script>
