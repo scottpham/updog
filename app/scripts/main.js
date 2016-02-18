@@ -179,6 +179,7 @@ var Dps = Backbone.View.extend({
 
 });
 
+//click button
 var Clicker = Backbone.View.extend({
 	// template: _.template($('#buttonTemplate').html()),
 	initialize: function() {
@@ -193,6 +194,7 @@ var Clicker = Backbone.View.extend({
 		this.model.clickIncrement();
 	},
 	render: function() {
+		//empty the el instead of populating it with a template
 		this.$el.empty();
 		//because events get effed on re-render
 		this.delegateEvents();
@@ -201,6 +203,7 @@ var Clicker = Backbone.View.extend({
 	}
 });
 
+//counter for doges
 var CounterView = Backbone.View.extend({
 	template: _.template($('#counterTemplate').html()),
 	render: function() {
@@ -219,6 +222,7 @@ var CounterView = Backbone.View.extend({
 	}
 });
 
+// buy button for click view
 var BuyClickView = Backbone.View.extend({
 	template: _.template($('#buyClickDogeTemplate').html()),
 	initialize: function() {
@@ -241,6 +245,7 @@ var BuyClickView = Backbone.View.extend({
 	}
 });
 
+// click doge stats
 var ShowClickDoges = Backbone.View.extend({
 	template: _.template($('#clickDogeCounterTemplate').html()),
 	initialize: function() {
@@ -261,6 +266,7 @@ var ShowClickDoges = Backbone.View.extend({
 	}
 });
 
+//buy a generator button
 var GeneratorView = Backbone.View.extend({
 	template: _.template($('#generatorTemplate').html()),
 	initialize: function() {
@@ -286,6 +292,7 @@ var GeneratorView = Backbone.View.extend({
 	}
 });
 
+//stats for number of generators
 var GeneratorCounter = Backbone.View.extend({
 	template: _.template($('#generatorCounterTemplate').html()),
 	initialize: function() {
@@ -305,6 +312,7 @@ var GeneratorCounter = Backbone.View.extend({
 	}
 });
 
+// top pic
 var DogePic = Backbone.View.extend({
 	template: {},
 	render: function() {
@@ -312,23 +320,24 @@ var DogePic = Backbone.View.extend({
 		this.delegateEvents();
 
 	},
+	events: {
+		"click": "handleClick"
+	},
+	handleClick: function() {
+		this.$el.animateCss('bounce');
+		this.model.clickIncrement();
+	},
 	initialize: function() {
 		this.render();
 
 		this.listenTo(this.model, 'change:clickDoges', this.newClickDoge);
-		this.listenTo(this.model, 'change:count', this.newDoge);
-
-	},
-	newDoge: function() {
-		// this.$el.animateCss('pulse');
 	},
 	newClickDoge: function() {
 		this.$el.animateCss('bounce');
 	}
 });
 
-
-
+//main app view
 var MainView = Backbone.View.extend({
 	el: $('#backboneEl'),
 	template: _.template($('#template').html()),
