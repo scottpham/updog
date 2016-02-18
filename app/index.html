@@ -61,9 +61,7 @@
         <div class="col-xs-5 col-sm-3 col-md-2 text-center">
           <div id='counter' style="max-width: 200px" class="panel panel-default"></div>
           <!-- updogs per second -->
-          <div class="text-center" id="dps">
-
-          </div>
+          <div class="text-center" id="dps"></div>
         </div>
 
       </div>
@@ -78,6 +76,11 @@
       <div class="col-xs-5 col-sm-3 col-md-2 text-center" id="clickerCounter">
       </div>
 
+			<!--  buy a click generator -->
+			<div class="col-xs-7 col-lg-6 col-md-offset-1" id="dogeGenerator"></div>
+
+			<!-- click generator counter -->
+			<div class="col-xs-5 col-sm-3 col-md-2 text-center" id="generatorCounter"></div>
 
 
 
@@ -86,6 +89,20 @@
 
 
   </script>
+
+	<script id="generatorCounterTemplate" type="text/template">
+		<div style="max-width: 200px" class="panel panel-default">
+
+		<h4>Generators: <%= generators %></h4>
+
+		</div>
+</script>
+
+	<script id="generatorTemplate" type="text/template">
+		<div class="text-center">
+			<button class="btn btn-lg btn-default" value="Buy a Doge Generator">Buy a Doge Generator<br /> Cost: <%= generatorCost %></button>
+		</div>
+	</script>
 
   <script id="dpsTemplate" type="text/template">
     <p>Doges per second: <%= dps %></p>

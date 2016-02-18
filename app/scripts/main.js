@@ -19,12 +19,40 @@ $.fn.extend({
 var Dogs = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			timeIncrementer: 0,
+			timeIncrementer: 1,
 			clickDoges: 0,
 			clickIncrementer: 1,
 			count: 0,
 			clickerCost: 10,
+			generatorCost: 50,
 			dps: 0,
+			generators: 0,
+		}
+	},
+	buyGenerator: function() {
+		var dogs = this.get('count');
+		var cost = this.get('generatorCost');
+		//dump out if cost is too much
+		if (dogs < cost) {
+			alert('Not enough Doges');
+			return;
+		} else {
+			//take the doges
+			this.set('count', dogs - cost);
+
+			//increment click doge count
+			var newCount = this.get('generators') + 1;
+
+			//set new click doge value
+			this.set({
+				"generators": newCount
+			});
+
+			//fire off new incrementer
+			this.setGenerator();
+
+			//reset the cost of click doges
+			this.increaseCost('generatorCost');
 		}
 	},
 	stopAutoClick: function() {
@@ -47,13 +75,33 @@ var Dogs = Backbone.Model.extend({
 		//this just rounds down
 		return Math.floor(num);
 	},
-	increaseCost: function() {
-		var cost = this.get('clickerCost');
+	increaseCost: function(buyable) {
+		var cost = this.get(buyable);
 		var clickers = this.get('clickDoges');
 
 		var newCost = cost * (1.3);
 
-		this.set('clickerCost', this.formatter(newCost));
+		this.set(buyable, this.formatter(newCost));
+	},
+	setGenerator() {
+		var generators = this.get('generators');
+		//base interval is 1 second per generator
+		var interval = 1000 / generators;
+
+		// clear out old interval
+
+		try {
+			window.clearInterval(this.autoGenerator);
+		} catch (e) {
+			console.log(e);
+		}
+
+
+		//set interval to run local function timeIncrement
+		this.autoGenerator = window.setInterval(this.timeIncrement.bind(this),
+			interval);
+
+		this.calculateDPS(interval);
 	},
 	setClickDoge: function() {
 
@@ -93,16 +141,17 @@ var Dogs = Backbone.Model.extend({
 			this.setClickDoge();
 
 			//reset the cost of click doges
-			this.increaseCost();
+			this.increaseCost('clickDoges');
 		}
 	},
 	timeIncrement: function() {
-
-		var newCount = this.get('count') + this.get('incrementer');
+		console.log('time increment fired');
+		var newCount = this.get('count') + this.get('timeIncrementer');
 
 		this.set({
 			'count': newCount
 		});
+
 	},
 	clickIncrement: function() {
 		console.log('clickIncrement fired');
@@ -111,6 +160,7 @@ var Dogs = Backbone.Model.extend({
 		this.set({
 			'count': newCount
 		});
+
 	}
 });
 
@@ -211,6 +261,50 @@ var ShowClickDoges = Backbone.View.extend({
 	}
 });
 
+var GeneratorView = Backbone.View.extend({
+	template: _.template($('#generatorTemplate').html()),
+	initialize: function() {
+		// re-render on change to model
+		this.listenTo(this.model, 'change', this.render);
+
+		this.render();
+	},
+	events: {
+		"click": "handleClick"
+	},
+	handleClick: function() {
+		this.model.buyGenerator();
+	},
+	render: function() {
+		// render template
+		this.$el.html(this.template(this.model.toJSON()));
+
+		//re attach events if there are any
+		this.delegateEvents();
+
+		return this;
+	}
+});
+
+var GeneratorCounter = Backbone.View.extend({
+	template: _.template($('#generatorCounterTemplate').html()),
+	initialize: function() {
+		//re-render on change to model
+		this.listenTo(this.model, 'change', this.render);
+
+		this.render();
+	},
+	render: function() {
+		//render template
+		this.$el.html(this.template(this.model.toJSON()))
+
+		//re attach events
+		this.delegateEvents();
+
+		return this;
+	}
+});
+
 var DogePic = Backbone.View.extend({
 	template: {},
 	render: function() {
@@ -232,6 +326,7 @@ var DogePic = Backbone.View.extend({
 		this.$el.animateCss('bounce');
 	}
 });
+
 
 
 var MainView = Backbone.View.extend({
@@ -270,6 +365,16 @@ var MainView = Backbone.View.extend({
 			el: $('#dogepic'),
 			model: this.model
 		});
+
+		this.generatorView = new GeneratorView({
+			el: $('#dogeGenerator'),
+			model: this.model
+		});
+
+		this.showGenerators = new GeneratorCounter({
+			el: $('#generatorCounter'),
+			model: this.model
+		})
 	},
 	render: function() {
 		//render template
