@@ -42,55 +42,32 @@
 
 			<!-- doge picture -->
 			<div class="row" >
+
 				<div class="col-xs-12 text-center">
 					<img class="animated" src="images/doge.jpeg" id="dogepic" alt="doge">
 				</div>
+
+				<!-- stats -->
+				<div id="stats" class="col-xs-12 text-center">
+
+				</div>
+
 			</div>
-
-      <!--  top-row -->
-      <div class="col-xs-12 center-block">
-
-        <!-- clicker -->
-        <div class="col-xs-7 col-lg-6 col-md-offset-1 text-center">
-          <input id="clicker" class="btn btn-lg btn-default text-center" type="button" value="Click to Updog">
-        </div>
-
-        <!-- counter -->
-        <div class="col-xs-5 col-sm-3 col-md-2 text-center">
-          <div id='counter' style="max-width: 200px" class="panel panel-default"></div>
-          <!-- updogs per second -->
-          <div class="text-center" id="dps"></div>
-        </div>
-
-      </div>
 
       <hr>
 
       <!-- buy a clicker -->
-      <div class="col-xs-7 col-lg-6 col-md-offset-1" id="buyClickDoge">
+      <div class="col-xs-6 col-md-3 col-md-offset-3" id="buyClickDoge">
       </div>
 
-      <!-- click doge counter -->
-      <div class="col-xs-5 col-sm-3 col-md-2 text-center" id="clickerCounter">
-      </div>
 
 			<!--  buy a click generator -->
-			<div class="col-xs-7 col-lg-6 col-md-offset-1" id="dogeGenerator"></div>
-
-			<!-- click generator counter -->
-			<div class="col-xs-5 col-sm-3 col-md-2 text-center" id="generatorCounter"></div>
+			<div class="col-xs-6 col-md-4 col-lg-3" id="dogeGenerator"></div>
 
     </div>
   </script>
 
 
-
-
-	<script id="generatorCounterTemplate" type="text/template">
-		<div style="max-width: 200px" class="panel panel-default">
-			<h4>Generators: <%= generators %></h4>
-		</div>
-	</script>
 
 	<script id="generatorTemplate" type="text/template">
 		<div class="text-center">
@@ -98,13 +75,6 @@
 		</div>
 	</script>
 
-  <script id="dpsTemplate" type="text/template">
-    <p>Doges per second: <%= dps %></p>
-  </script>
-
-  <script id="counterTemplate" type="text/template">
-    <h2 class="text-center">  Doges: <%= count %> </h2>
-  </script>
 
   <script id="buyClickDogeTemplate" type="text/html">
 	  <div class="text-center">
@@ -117,6 +87,10 @@
       <h4>Click-Doges: <%= clickDoges %></h4>
     </div>
   </script>
+
+	<script id="statsTemplate" type="text/html">
+		<div class="text-center">Doges: <%= count %> | Doges per second: <%= dps %> | Click Doges: <%= clickDoges %> | Doge Generators: <%= generators %></div>
+	</script>
 
     <!-- build:js({app,.tmp}) scripts/vendor.js -->
     <!-- bower:js -->

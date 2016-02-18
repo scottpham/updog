@@ -64,11 +64,15 @@ var Dogs = Backbone.Model.extend({
 	},
 	calculateDPS: function(miliseconds) {
 		var dps = this.get('dps');
-		var incrementer = this.get('timeIncrementer');
+		var timeIncrementer = this.get('timeIncrementer');
+		var clickIncrementer = this.get('clickIncrementer');
+		var clickers = this.get('clickDoges');
+		var generators = this.get('generators');
 
-		var newDps = 1 / (miliseconds / 1000);
+		var clickDps = (clickIncrementer * clickers) / 10;
+		var generatorDps = (timeIncrementer * generators);
 
-		this.set('dps', newDps + incrementer);
+		this.set('dps', clickDps + generatorDps);
 
 	},
 	formatter: function(num) {
@@ -141,7 +145,7 @@ var Dogs = Backbone.Model.extend({
 			this.setClickDoge();
 
 			//reset the cost of click doges
-			this.increaseCost('clickDoges');
+			this.increaseCost('clickerCost');
 		}
 	},
 	timeIncrement: function() {
@@ -164,20 +168,6 @@ var Dogs = Backbone.Model.extend({
 	}
 });
 
-var Dps = Backbone.View.extend({
-	template: _.template($('#dpsTemplate').html()),
-	initialize: function() {
-		this.render();
-		this.listenTo(this.model, 'change', this.render);
-	},
-	render: function() {
-		//render
-		this.$el.html(this.template(this.model.toJSON()));
-
-		this.delegateEvents();
-	}
-
-});
 
 //click button
 var Clicker = Backbone.View.extend({
@@ -200,25 +190,6 @@ var Clicker = Backbone.View.extend({
 		this.delegateEvents();
 
 		return this;
-	}
-});
-
-//counter for doges
-var CounterView = Backbone.View.extend({
-	template: _.template($('#counterTemplate').html()),
-	render: function() {
-		//because there is no template
-		this.$el.html(this.template(this.model.toJSON()));
-		//because events get effed on re-render
-		this.delegateEvents();
-
-		return this;
-	},
-	initialize: function() {
-		//re-render on change
-		this.listenTo(this.model, 'change', this.render);
-
-		this.render();
 	}
 });
 
@@ -292,26 +263,6 @@ var GeneratorView = Backbone.View.extend({
 	}
 });
 
-//stats for number of generators
-var GeneratorCounter = Backbone.View.extend({
-	template: _.template($('#generatorCounterTemplate').html()),
-	initialize: function() {
-		//re-render on change to model
-		this.listenTo(this.model, 'change', this.render);
-
-		this.render();
-	},
-	render: function() {
-		//render template
-		this.$el.html(this.template(this.model.toJSON()))
-
-		//re attach events
-		this.delegateEvents();
-
-		return this;
-	}
-});
-
 // top pic
 var DogePic = Backbone.View.extend({
 	template: {},
@@ -337,53 +288,52 @@ var DogePic = Backbone.View.extend({
 	}
 });
 
+var StatsView = Backbone.View.extend({
+	template: _.template($('#statsTemplate').html()),
+	initialize: function() {
+		this.render();
+
+		this.listenTo(this.model, 'change', this.render);
+	},
+	render: function() {
+		//render template
+		this.$el.html(this.template(this.model.toJSON()));
+
+		this.delegateEvents();
+
+	}
+});
+
 //main app view
 var MainView = Backbone.View.extend({
 	el: $('#backboneEl'),
 	template: _.template($('#template').html()),
 	initialize: function() {
 		this.render();
-		//clicker is a sub view of of main view
-		this.clicker = new Clicker({
-			el: $('#clicker'),
-			model: this.model
-		});
 
-		//counter is a sub view
-		this.counter = new CounterView({
-			el: $('#counter'),
-			model: this.model
-		});
-
+		//clicker buying button
 		this.buyClick = new BuyClickView({
 			el: $('#buyClickDoge'),
 			model: this.model
 		});
 
-		this.showClickDoges = new ShowClickDoges({
-			el: $('#clickerCounter'),
-			model: this.model
-		});
-
-		this.dps = new Dps({
-			el: $('#dps'),
-			model: this.model
-		});
-
+		//doge pic and button
 		this.dogePic = new DogePic({
 			el: $('#dogepic'),
 			model: this.model
 		});
 
+		//button to buy generators
 		this.generatorView = new GeneratorView({
 			el: $('#dogeGenerator'),
 			model: this.model
 		});
 
-		this.showGenerators = new GeneratorCounter({
-			el: $('#generatorCounter'),
+		this.stats = new StatsView({
+			el: $('#stats'),
 			model: this.model
-		})
+		});
+
 	},
 	render: function() {
 		//render template
