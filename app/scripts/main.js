@@ -87,7 +87,7 @@ var Dogs = Backbone.Model.extend({
 
 		this.set(buyable, this.formatter(newCost));
 	},
-	setGenerator() {
+	setGenerator: function() {
 		var generators = this.get('generators');
 		//base interval is 1 second per generator
 		var interval = 1000 / generators;
